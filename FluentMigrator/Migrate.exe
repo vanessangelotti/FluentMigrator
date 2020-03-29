@@ -1,0 +1,27 @@
+@echo off
+if "%1" == "rollback" goto rollback
+if "%1" == "" goto migrate
+if "%1" == "version" goto version
+if "%1" == "down" goto down
+goto error
+
+:migrate
+migrate -db SqlServer2014 -connection "Server=[YOUR CONNECTTION STRING]" -assembly "[YOUR MIGRATION ASSEMBLY]"
+goto done
+
+:rollback
+migrate -db SqlServer2014 -connection "Server=[YOUR CONNECTTION STRING]" -assembly "[YOUR MIGRATION ASSEMBLY]" -task rollback:all
+goto done
+
+:version
+migrate -db SqlServer2014 -version "%2" -connection "Server=[YOUR CONNECTTION STRING]" -assembly "[YOUR MIGRATION ASSEMBLY]"
+goto done
+
+:down
+migrate -db SqlServer2014 -version %2 -connection "Server=[YOUR CONNECTTION STRING]" -assembly "[YOUR MIGRATION ASSEMBLY]" -task rollback:toversion
+
+:error
+echo "No valid command"
+
+:done
+echo "Completed"
